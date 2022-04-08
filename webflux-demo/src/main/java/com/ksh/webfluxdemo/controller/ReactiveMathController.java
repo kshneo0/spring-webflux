@@ -2,6 +2,7 @@ package com.ksh.webfluxdemo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.codec.json.AbstractJackson2Encoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +28,8 @@ public class ReactiveMathController {
 	
 	@GetMapping("table/{input}")
 	public Flux<Response> multiplicationTable(@PathVariable int input){
+//		AbstractJackson2Encoder
+		Mono<List<Response>>
 		return this.mathService.multiplicationTable(input);
 	}
 	
