@@ -29,7 +29,7 @@ public class ReactiveMathController {
 	@GetMapping("table/{input}")
 	public Flux<Response> multiplicationTable(@PathVariable int input){
 //		AbstractJackson2Encoder
-		Mono<List<Response>>
+//		Mono<List<Response>>
 		return this.mathService.multiplicationTable(input);
 	}
 	
