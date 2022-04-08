@@ -8,6 +8,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import com.ksh.webfluxdemo.dto.Response;
 import com.ksh.webfluxdemo.service.ReactiveMathService;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -20,6 +21,12 @@ public class RequestHandler {
 		int input = Integer.valueOf(serverRequest.pathVariable("input"));
 		Mono<Response> responseMono = this.mathService.findSquare(input);
 		return ServerResponse.ok().body(responseMono, Response.class);
+	}
+	
+	public Mono<ServerResponse> tableHandler(ServerRequest serverRequest){
+		int input = Integer.valueOf(serverRequest.pathVariable("input"));
+		Flux<Response> responseFlux = this.mathService.multiplicationTable(input);
+		return ServerResponse.ok().body(responseFlux, Response.class);
 	}
 
 }
