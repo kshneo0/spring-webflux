@@ -41,5 +41,9 @@ public class ProductService {
 				.flatMap(this.repository::save)
 				.map(EntityDtoUtil::toDto);
 	}
+	
+	public Mono<Void> deleteProduct(String id) {
+		return this.repository.deleteById(id);
+	}
 
 }
