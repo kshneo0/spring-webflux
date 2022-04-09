@@ -33,7 +33,7 @@ public class ProductService {
 			.map(EntityDtoUtil::toDto);
 	}
 	
-	public Mono<ProductDto> updateinsertProduct(String id, Mono<ProductDto> productDtoMono) {
+	public Mono<ProductDto> updateProduct(String id, Mono<ProductDto> productDtoMono) {
 		return this.repository.findById(id)
 				.flatMap( p -> productDtoMono
 							.map(EntityDtoUtil::toEntity)
