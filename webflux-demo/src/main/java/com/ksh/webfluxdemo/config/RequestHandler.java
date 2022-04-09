@@ -1,6 +1,7 @@
 package com.ksh.webfluxdemo.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -27,6 +28,14 @@ public class RequestHandler {
 		int input = Integer.valueOf(serverRequest.pathVariable("input"));
 		Flux<Response> responseFlux = this.mathService.multiplicationTable(input);
 		return ServerResponse.ok().body(responseFlux, Response.class);
+	}
+	
+	public Mono<ServerResponse> tableStreamHandler(ServerRequest serverRequest){
+		int input = Integer.valueOf(serverRequest.pathVariable("input"));
+		Flux<Response> responseFlux = this.mathService.multiplicationTable(input);
+		return ServerResponse.ok()
+				.contentType(MediaType.TEXT_EVENT_STREAM)
+				.body(responseFlux, Response.class);
 	}
 
 }
