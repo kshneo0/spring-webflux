@@ -1,6 +1,7 @@
 package com.ksh.productservice.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Range;
 import org.springframework.stereotype.Service;
 
 import com.ksh.productservice.dto.ProductDto;
@@ -19,6 +20,11 @@ public class ProductService {
 	public Flux<ProductDto> getAll() {
 		return this.repository.findAll()
 			.map(EntityDtoUtil::toDto);
+	}
+	
+	public Flux<ProductDto> getProductByPriceRange(int min, int max) {
+		return this.repository.findByPriceBetween(Range.closed(min,max))
+				.map(EntityDtoUtil::toDto);
 	}
 	
 	public Mono<ProductDto> getProductById(String id) {
