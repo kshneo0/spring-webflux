@@ -27,8 +27,8 @@ public class Lec05RouterFunctionTest {
     @Autowired
     private ApplicationContext ctx;
     
-    @Autowired
-    private RouterConfig config;
+//    @Autowired
+//    private RouterConfig config;
 
     @MockBean
     private RequestHandler handler;
@@ -37,6 +37,12 @@ public class Lec05RouterFunctionTest {
     public void setClient(){
 //        this.client = WebTestClient.bindToRouterFunction(config.highLevelRouter()).build();
         this.client = WebTestClient.bindToApplicationContext(ctx).build();
+        
+        
+        
+//        WebTestClient.bindToServer().baseUrl("http://localhost:8080").build()
+//        	.get()
+//        	.uri()
 
     }
 
