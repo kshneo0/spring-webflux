@@ -26,7 +26,7 @@ public class DataSetupService implements CommandLineRunner {
         ProductDto p4 = new ProductDto("headphone", 100);
 
         Flux.just(p1, p2, p3, p4)
-//                .concatWith(newProducts())
+                .concatWith(newProducts())
                 .flatMap(p -> this.service.insertProduct(Mono.just(p)))
                 .subscribe(System.out::println);
 
