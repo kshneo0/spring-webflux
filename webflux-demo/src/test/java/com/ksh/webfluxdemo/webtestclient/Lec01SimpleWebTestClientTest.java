@@ -1,5 +1,6 @@
 package com.ksh.webfluxdemo.webtestclient;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
@@ -37,6 +38,18 @@ public class Lec01SimpleWebTestClientTest {
 
     }
 
+    @Test
+    public void fluentAssertionTest(){
+        this.client
+                .get()
+                .uri("/reactive-math/square/{number}", 5)
+                .exchange()
+                .expectStatus().is2xxSuccessful()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody(Response.class)
+                .value(r -> Assertions.assertThat(r.getOutput()).isEqualTo(25));
+
+    }
 
 
 }
