@@ -1,6 +1,9 @@
 package com.ksh.orderservice.service;
 
+import java.time.Duration;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import reactor.util.retry.Retry;
 import org.springframework.stereotype.Service;
 
 import com.ksh.orderservice.client.ProductClient;
@@ -41,6 +44,7 @@ public class OrderFulfillmentService {
 	private Mono<RequestContext> productRequestResponse(RequestContext rc) {
 		return this.productClient.getProductById(rc.getPurchaseOrderRequestDto().getProductId())
 			.doOnNext(rc::setProductDto)
+			.retryWhen(Retry.fixedDelay(5, Duration.ofSeconds(1)))
 			.thenReturn(rc);
 	}
 	
