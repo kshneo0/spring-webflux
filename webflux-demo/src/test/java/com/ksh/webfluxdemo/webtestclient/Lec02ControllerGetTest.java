@@ -1,6 +1,7 @@
 package com.ksh.webfluxdemo.webtestclient;
 
 import java.time.Duration;
+import java.util.Map;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
+import com.ksh.webfluxdemo.controller.ParamsController;
 import com.ksh.webfluxdemo.controller.ReactiveMathController;
 import com.ksh.webfluxdemo.dto.Response;
 import com.ksh.webfluxdemo.service.ReactiveMathService;
@@ -18,7 +20,7 @@ import com.ksh.webfluxdemo.service.ReactiveMathService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-@WebFluxTest(ReactiveMathController.class)
+@WebFluxTest(controllers = {ReactiveMathController.class, ParamsController.class})
 public class Lec02ControllerGetTest {
 
     @Autowired
@@ -83,5 +85,22 @@ public class Lec02ControllerGetTest {
                 .expectBodyList(Response.class)
                 .hasSize(3);
 
+    }
+    
+    @Test
+    public void paramsTest(){
+
+        Map<String, Integer> map = Map.of(
+                "count", 10,
+                "page", 20
+        );
+
+        this.client
+                .get()
+                .uri(b -> b.path("/jobs/search").query("count={count}&page={page}").build(map))
+                .exchange()
+                .expectStatus().is2xxSuccessful()
+                .expectBodyList(Integer.class)
+                .hasSize(2).contains(10, 20);
     }
 }
