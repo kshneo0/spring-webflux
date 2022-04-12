@@ -1,4 +1,4 @@
-package com.ksh.webfluxdemo;
+package com.ksh.webfluxdemo.webclient;
 
 import org.springframework.boot.test.context.SpringBootTest;
 
