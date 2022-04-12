@@ -1,5 +1,7 @@
 package com.ksh.webfluxdemo.webtestclient;
 
+import java.time.Duration;
+
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -58,6 +60,26 @@ public class Lec02ControllerGetTest {
                 .exchange()
                 .expectStatus().is2xxSuccessful()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBodyList(Response.class)
+                .hasSize(3);
+
+    }
+    
+    @Test
+    public void streamingResponseTest(){
+
+        Flux<Response> flux = Flux.range(1, 3)
+                .map(Response::new)
+                .delayElements(Duration.ofMillis(100));
+
+        Mockito.when(reactiveMathService.multiplicationTable(Mockito.anyInt())).thenReturn(flux);
+
+        this.client
+                .get()
+                .uri("/reactive-math/table/{number}/stream", 5)
+                .exchange()
+                .expectStatus().is2xxSuccessful()
+                .expectHeader().contentTypeCompatibleWith(MediaType.TEXT_EVENT_STREAM)
                 .expectBodyList(Response.class)
                 .hasSize(3);
 
