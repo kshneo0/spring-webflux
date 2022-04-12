@@ -31,7 +31,7 @@ public class PurchaseOrderController {
     	return this.orderFulfillmentService.processOrder(requestDtoMono);
     }
     
-    @GetMapping("user/{id}")
+    @GetMapping("user/{userId}")
     public Flux<PurchaseOrderResponseDto> getOrdersByUserId(@PathVariable int userId){
     	return this.queryService.getProductsByUserId(userId);
     }
