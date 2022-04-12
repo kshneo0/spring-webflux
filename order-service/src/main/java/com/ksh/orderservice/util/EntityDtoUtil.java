@@ -1,6 +1,9 @@
 package com.ksh.orderservice.util;
 
+import org.springframework.beans.BeanUtils;
+
 import com.ksh.orderservice.dto.OrderStatus;
+import com.ksh.orderservice.dto.PurchaseOrderResponseDto;
 import com.ksh.orderservice.dto.RequestContext;
 import com.ksh.orderservice.dto.TransactionRequestDto;
 import com.ksh.orderservice.dto.TransactionStatus;
@@ -8,6 +11,13 @@ import com.ksh.orderservice.entity.PurchaseOrder;
 
 public class EntityDtoUtil {
 
+    public static PurchaseOrderResponseDto getPurchaseOrderResponseDto(PurchaseOrder purchaseOrder){
+        PurchaseOrderResponseDto dto = new PurchaseOrderResponseDto();
+        BeanUtils.copyProperties(purchaseOrder, dto);
+        dto.setOrderId(purchaseOrder.getId());
+        return dto;
+    }
+    
     public static void setTransactionRequestDto(RequestContext requestContext){
         TransactionRequestDto dto = new TransactionRequestDto();
         dto.setUserId(requestContext.getPurchaseOrderRequestDto().getUserId());

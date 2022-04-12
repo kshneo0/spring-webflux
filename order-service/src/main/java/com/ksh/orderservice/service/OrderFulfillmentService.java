@@ -12,6 +12,7 @@ import com.ksh.orderservice.repository.PurchaseOrderRepository;
 import com.ksh.orderservice.util.EntityDtoUtil;
 
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 @Service
 public class OrderFulfillmentService {
@@ -26,12 +27,14 @@ public class OrderFulfillmentService {
 	private UserClient userClient;
 	
 	public Mono<PurchaseOrderResponseDto> processOrder(Mono<PurchaseOrderRequestDto> requestDtoMono){
-		requestDtoMono.map(RequestContext::new)
+		return requestDtoMono.map(RequestContext::new)
 			.flatMap(this::productRequestResponse)
 			.doOnNext(EntityDtoUtil::setTransactionRequestDto)
 			.flatMap(this::userRequestResponse)
 			.map(EntityDtoUtil::getPurchaseOrder)
-			.map(this.orderRepository::save)
+			.map(this.orderRepository::save)	//blicking
+			.map(EntityDtoUtil::getPurchaseOrderResponseDto)
+			.subscribeOn(Schedulers.boundedElastic());
 			
 	}
 	
@@ -42,7 +45,7 @@ public class OrderFulfillmentService {
 	}
 	
 	private Mono<RequestContext> userRequestResponse(RequestContext rc){
-		this.userClient.authorizeTransaction(rc.getTransactionRequestDto())
+		return this.userClient.authorizeTransaction(rc.getTransactionRequestDto())
 			.doOnNext(rc::setTransactionResponseDto)
 			.thenReturn(rc);
 	}
