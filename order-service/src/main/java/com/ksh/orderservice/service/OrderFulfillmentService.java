@@ -8,12 +8,16 @@ import com.ksh.orderservice.client.UserClient;
 import com.ksh.orderservice.dto.PurchaseOrderRequestDto;
 import com.ksh.orderservice.dto.PurchaseOrderResponseDto;
 import com.ksh.orderservice.dto.RequestContext;
+import com.ksh.orderservice.repository.PurchaseOrderRepository;
 import com.ksh.orderservice.util.EntityDtoUtil;
 
 import reactor.core.publisher.Mono;
 
 @Service
 public class OrderFulfillmentService {
+	
+	@Autowired
+	private PurchaseOrderRepository orderRepository;
 	
 	@Autowired
 	private ProductClient productClient;
@@ -26,6 +30,9 @@ public class OrderFulfillmentService {
 			.flatMap(this::productRequestResponse)
 			.doOnNext(EntityDtoUtil::setTransactionRequestDto)
 			.flatMap(this::userRequestResponse)
+			.map(EntityDtoUtil::getPurchaseOrder)
+			.map(this.orderRepository::save)
+			
 	}
 	
 	private Mono<RequestContext> productRequestResponse(RequestContext rc) {
