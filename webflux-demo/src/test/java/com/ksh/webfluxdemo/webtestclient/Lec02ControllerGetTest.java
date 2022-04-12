@@ -13,6 +13,7 @@ import com.ksh.webfluxdemo.controller.ReactiveMathController;
 import com.ksh.webfluxdemo.dto.Response;
 import com.ksh.webfluxdemo.service.ReactiveMathService;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @WebFluxTest(ReactiveMathController.class)
@@ -39,6 +40,26 @@ public class Lec02ControllerGetTest {
                 .expectBody(Response.class)
 //                .value(r -> Assertions.assertThat(r.getOutput()).isEqualTo(25));
                 .value(r -> Assertions.assertThat(r.getOutput()).isEqualTo(-1));
+
+    }
+    
+    @Test
+    public void listResponseTest(){
+
+        Flux<Response> flux = Flux.range(1, 3)
+                .map(Response::new);
+
+        Mockito.when(reactiveMathService.multiplicationTable(Mockito.anyInt())).thenReturn(flux);
+//        Mockito.when(reactiveMathService.multiplicationTable(Mockito.anyInt())).thenReturn(Flux.error(new IllegalArgumentException()));
+
+        this.client
+                .get()
+                .uri("/reactive-math/table/{number}", 5)
+                .exchange()
+                .expectStatus().is2xxSuccessful()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBodyList(Response.class)
+                .hasSize(3);
 
     }
 }
