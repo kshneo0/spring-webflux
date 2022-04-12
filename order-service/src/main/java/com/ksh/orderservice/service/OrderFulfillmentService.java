@@ -8,6 +8,7 @@ import com.ksh.orderservice.client.UserClient;
 import com.ksh.orderservice.dto.PurchaseOrderRequestDto;
 import com.ksh.orderservice.dto.PurchaseOrderResponseDto;
 import com.ksh.orderservice.dto.RequestContext;
+import com.ksh.orderservice.util.EntityDtoUtil;
 
 import reactor.core.publisher.Mono;
 
@@ -23,11 +24,19 @@ public class OrderFulfillmentService {
 	public Mono<PurchaseOrderResponseDto> processOrder(Mono<PurchaseOrderRequestDto> requestDtoMono){
 		requestDtoMono.map(RequestContext::new)
 			.flatMap(this::productRequestResponse)
+			.doOnNext(EntityDtoUtil::setTransactionRequestDto)
+			.flatMap(this::userRequestResponse)
 	}
 	
 	private Mono<RequestContext> productRequestResponse(RequestContext rc) {
 		return this.productClient.getProductById(rc.getPurchaseOrderRequestDto().getProductId())
 			.doOnNext(rc::setProductDto)
+			.thenReturn(rc);
+	}
+	
+	private Mono<RequestContext> userRequestResponse(RequestContext rc){
+		this.userClient.authorizeTransaction(rc.getTransactionRequestDto())
+			.doOnNext(rc::setTransactionResponseDto)
 			.thenReturn(rc);
 	}
 }
