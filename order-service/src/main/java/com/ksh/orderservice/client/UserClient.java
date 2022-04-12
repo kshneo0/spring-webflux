@@ -6,7 +6,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import com.ksh.orderservice.dto.TransactionRequestDto;
 import com.ksh.orderservice.dto.TransactionResponseDto;
+import com.ksh.orderservice.dto.UserDto;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -27,5 +29,13 @@ public class UserClient {
                 .retrieve()
                 .bodyToMono(TransactionResponseDto.class);
     }
+    
+	public Flux<UserDto> getAllUsers(){
+		return this.webClient
+				.get()
+				.uri("all")
+				.retrieve()
+				.bodyToFlux(UserDto.class);
+	}
 
 }
